@@ -115,7 +115,8 @@ func (i *incidentUpdate) publish() error {
 		QueueUrl:    aws.String(os.Getenv("QUEUE_URL")),
 	}
 
-	if _, err := i.sqs.SendMessage(&in); err != nil {
+	_, err = i.sqs.SendMessage(&in)
+	if err != nil {
 		return fmt.Errorf("failed to publish incident: %s", err)
 	}
 

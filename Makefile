@@ -1,6 +1,6 @@
 .PHONY: clean test build zip
 
-default: clean build zip
+default: clean test build zip
 
 clean:
 	-rm -rf bin/*

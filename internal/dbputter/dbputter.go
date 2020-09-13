@@ -25,9 +25,9 @@ func NewPutter(d DBPutter) *Putter {
 }
 
 // DBPut creates a new db record
-func (p *Putter) DBPut(s map[string]interface{}) error {
+func (p *Putter) DBPut(ms map[string]interface{}) error {
 
-	item, err := dynamodbattribute.MarshalMap(s)
+	item, err := dynamodbattribute.MarshalMap(ms)
 	if err != nil {
 		return fmt.Errorf("failed to marshal db record: %s", err)
 	}

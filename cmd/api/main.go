@@ -21,6 +21,7 @@ func init() {
 	}))
 	esqs = sqs.New(sess, &aws.Config{Region: aws.String(os.Getenv("AWS_REGION"))})
 }
+
 func handler(req *events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	return api.NewHandler(esqs).Handle(req)
 }

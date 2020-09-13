@@ -8,12 +8,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
-// Ticket can be an incident or change
+// Ticket is an abstraction for an incident or change
 type Ticket interface {
 	publish() error
 }
 
-// Messenger is an abstraction (helpful for testing)
+// Messenger is an abstraction for a SQS client
 type Messenger interface {
 	SendMessage(*sqs.SendMessageInput) (*sqs.SendMessageOutput, error)
 }
