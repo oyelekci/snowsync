@@ -1,0 +1,15 @@
+kind: pipeline
+name: snowsync
+type: kubernetes
+
+steps:
+
+- name: build
+  image: golang:1.15-alpine
+  commands:
+  - go mod download
+  - GOOS=linux GOARCH=amd64 go build -v -o ./bin/handle ./cmd/handle
+  - GOOS=linux GOARCH=amd64 go build -v -o ./bin/process ./cmd/process
+  - GOOS=linux GOARCH=amd64 go build -v -o ./bin/forward ./cmd/forward
+  - GOOS=linux GOARCH=amd64 go build -v -o ./bin/save ./cmd/save
+  - ls -lah bin/
