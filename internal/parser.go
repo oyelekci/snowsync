@@ -21,13 +21,13 @@ func parseIncident(ctx context.Context, input string) (*incidentUpdate, error) {
 	i.Cluster = gjson.Get(input, os.Getenv("CLUSTER_FIELD")).Str
 	i.Component = gjson.Get(input, os.Getenv("COMPONENT_FIELD")).Str
 	i.Description = gjson.Get(input, os.Getenv("DESCRIPTION_FIELD")).Str
-	i.Issue = gjson.Get(input, os.Getenv("ISSUE_ID_FIELD")).Str
+	i.IssueID = gjson.Get(input, os.Getenv("ISSUE_ID_FIELD")).Str
 	i.Priority = gjson.Get(input, os.Getenv("PRIORITY_FIELD")).Str
 	i.Status = gjson.Get(input, os.Getenv("STATUS_FIELD")).Str
 	i.Summary = gjson.Get(input, os.Getenv("SUMMARY_FIELD")).Str
 	u := incidentUpdate{incident: i}
 
-	log.Printf("parsed JSD event: %v, status: %v\n", i.Issue, i.Status)
+	log.Printf("parsed incident: %v, status: %v\n", i.IssueID, i.Status)
 	return &u, nil
 }
 

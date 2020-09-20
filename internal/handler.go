@@ -13,13 +13,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
-// SQSAPI is a minimal interface
+// SQSAPI writes to SQS
 type SQSAPI interface {
 	SendMessageWithContext(aws.Context, *sqs.SendMessageInput, ...request.Option) (*sqs.SendMessageOutput, error)
 }
 
-// update is a minimal interface
-type update interface {
+// ticket can be an incident or change
+type ticket interface {
 	execute(context.Context) (*Response, error)
 }
 
@@ -28,7 +28,7 @@ type Handler struct {
 	sqs SQSAPI
 }
 
-// Response is returned to JSD after capturing the request
+// Response is returned after capturing the request
 type Response struct {
 	ResponseType string `json:"response_type"`
 	Text         string `json:"text"`
@@ -42,7 +42,7 @@ func NewHandler(s SQSAPI) *Handler {
 // Handle deals with the incoming request
 func (h *Handler) Handle(ctx context.Context, request *events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	up, err := h.parseUpdate(ctx, request.Body)
+	tk, err := h.parseTicket(ctx, request.Body)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			StatusCode: http.StatusBadRequest,
@@ -50,7 +50,7 @@ func (h *Handler) Handle(ctx context.Context, request *events.APIGatewayProxyReq
 		}, nil
 	}
 
-	rsp, err := up.execute(ctx)
+	rsp, err := tk.execute(ctx)
 	if err != nil {
 		log.Println(err)
 		return events.APIGatewayProxyResponse{
@@ -75,7 +75,7 @@ func (h *Handler) Handle(ctx context.Context, request *events.APIGatewayProxyReq
 	}, nil
 }
 
-func (h *Handler) parseUpdate(ctx context.Context, input string) (update, error) {
+func (h *Handler) parseTicket(ctx context.Context, input string) (ticket, error) {
 
 	ia, err := parseIncident(ctx, input)
 	if err == nil {
@@ -89,5 +89,5 @@ func (h *Handler) parseUpdate(ctx context.Context, input string) (update, error)
 	// 	return ca, err
 	// }
 
-	return nil, fmt.Errorf("failed to parse any events")
+	return nil, fmt.Errorf("failed to parse the ticket")
 }

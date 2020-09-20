@@ -15,7 +15,8 @@ type Incident struct {
 	Cluster     string `json:"cluster,omitempty"`
 	Component   string `json:"component,omitempty"`
 	Description string `json:"description,omitempty"`
-	Issue       string `json:"issue_id,omitempty"`
+	Identifier  string `json:"external_identifier,omitempty"`
+	IssueID     string `json:"issue_id,omitempty"`
 	Priority    string `json:"priority,omitempty"`
 	Status      string `json:"status,omitempty"`
 	Summary     string `json:"summary,omitempty"`
