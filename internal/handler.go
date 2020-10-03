@@ -13,19 +13,19 @@ import (
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
-// SQSAPI writes to SQS
-type SQSAPI interface {
+// Messenger writes to SQS
+type Messenger interface {
 	SendMessageWithContext(aws.Context, *sqs.SendMessageInput, ...request.Option) (*sqs.SendMessageOutput, error)
 }
 
-// ticket can be an incident or change
-type ticket interface {
-	execute(context.Context) (*Response, error)
+// Ticket can be an incident or change
+type Ticket interface {
+	publish(context.Context) (*Response, error)
 }
 
 // Handler respresents the handler type
 type Handler struct {
-	sqs SQSAPI
+	mgr Messenger
 }
 
 // Response is returned after capturing the request
@@ -35,8 +35,8 @@ type Response struct {
 }
 
 // NewHandler returns a new Handler
-func NewHandler(s SQSAPI) *Handler {
-	return &Handler{sqs: s}
+func NewHandler(m Messenger) *Handler {
+	return &Handler{mgr: m}
 }
 
 // Handle deals with the incoming request
@@ -50,7 +50,7 @@ func (h *Handler) Handle(ctx context.Context, request *events.APIGatewayProxyReq
 		}, nil
 	}
 
-	rsp, err := tk.execute(ctx)
+	rsp, err := tk.publish(ctx)
 	if err != nil {
 		log.Println(err)
 		return events.APIGatewayProxyResponse{
@@ -75,17 +75,17 @@ func (h *Handler) Handle(ctx context.Context, request *events.APIGatewayProxyReq
 	}, nil
 }
 
-func (h *Handler) parseTicket(ctx context.Context, input string) (ticket, error) {
+func (h *Handler) parseTicket(ctx context.Context, input string) (Ticket, error) {
 
 	ia, err := parseIncident(ctx, input)
 	if err == nil {
-		ia.sqs = h.sqs
+		ia.sqs = h.mgr
 		return ia, err
 	}
 
 	// ca, err := parseChange(ctx, input)
 	// if err == nil {
-	// 	ca.sqs = h.sqs
+	// 	ca.sqs = h.mgr
 	// 	return ca, err
 	// }
 

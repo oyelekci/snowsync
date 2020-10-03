@@ -25,7 +25,7 @@ type Incident struct {
 // incidentUpdate is an event
 type incidentUpdate struct {
 	incident *Incident
-	sqs      SQSAPI
+	sqs      Messenger
 }
 
 // New initialises a new Incident
@@ -34,7 +34,7 @@ func New() *Incident {
 }
 
 // execute publishes an incident update to SQS
-func (i *incidentUpdate) execute(ctx context.Context) (*Response, error) {
+func (i *incidentUpdate) publish(ctx context.Context) (*Response, error) {
 
 	sm, err := json.Marshal(i.incident)
 	if err != nil {

@@ -4,12 +4,13 @@ import (
 	"context"
 	"os"
 
-	snowsync "github.com/UKHomeOffice/snowsync/internal"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
+
+	snowsync "github.com/UKHomeOffice/snowsync/internal"
 )
 
 var sess *session.Session

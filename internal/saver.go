@@ -28,24 +28,17 @@ type Saver struct {
 	ddb DBPuter
 }
 
-// Record is a db record
-type Record struct {
-	Body []byte `json:"body,omitempty"`
-}
-
 // Save saves a ticket
-func (s *Saver) Save(ctx context.Context, rec Record) error {
+func (s *Saver) Save(ctx context.Context, st string) error {
 
-	//log.Printf("debug - request: %v", req)
+	log.Printf("debug - into saver: %+v", st)
 
-	var dat map[string]interface{}
-	err := json.Unmarshal(rec.Body, &dat)
+	rec, err := json.Marshal(st)
 	if err != nil {
-		return fmt.Errorf("failed to unmarshal invocation input: %s", err)
+		return fmt.Errorf("failed to marshal db record: %v", err)
 	}
-	log.Printf("debug - input body: %v", dat["body"])
 
-	item, err := dynamodbattribute.MarshalMap(dat["body"])
+	item, err := dynamodbattribute.MarshalMap(rec)
 	if err != nil {
 		return fmt.Errorf("failed to marshal db record: %s", err)
 	}
