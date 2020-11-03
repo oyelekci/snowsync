@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 )
 
@@ -17,20 +16,7 @@ type mockDynamoDB struct {
 func (md *mockDynamoDB) PutItem(input *dynamodb.PutItemInput) (*dynamodb.PutItemOutput, error) {
 	output := new(dynamodb.PutItemOutput)
 
-	type Item struct {
-		issueID string
-	}
-
-	a := Item{}
-	err := dynamodbattribute.UnmarshalMap(input.Item, &a)
-	if err != nil {
-		return nil, err
-	}
-
-	if a.issueID != "" {
-		return output, md.err
-	}
-	return nil, md.err
+	return output, md.err
 }
 
 func TestDBPut(t *testing.T) {
@@ -57,7 +43,7 @@ func TestDBPut(t *testing.T) {
 
 			putter := NewPutter(&mockDynamoDB{})
 
-			// todo: test unhappy path properly
+			// todo: fix unhappy path
 			if tc.err != "" {
 				in := map[string]interface{}{"issueID": tc.issueID}
 

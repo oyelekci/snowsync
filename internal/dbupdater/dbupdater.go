@@ -52,7 +52,7 @@ func (u *Updater) DBUpdate(ms map[string]interface{}) error {
 
 	_, err := u.ddb.UpdateItem(input)
 	if err != nil {
-		return fmt.Errorf("failed to put to db: %v", err)
+		return fmt.Errorf("failed to update db: %v", err)
 	}
 	fmt.Printf("%v updated on db", iid)
 	return nil
