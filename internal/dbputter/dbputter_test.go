@@ -15,7 +15,6 @@ type mockDynamoDB struct {
 
 func (md *mockDynamoDB) PutItem(input *dynamodb.PutItemInput) (*dynamodb.PutItemOutput, error) {
 	output := new(dynamodb.PutItemOutput)
-
 	return output, md.err
 }
 
